@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}Question {{ question_number }} | GCSI Survey{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12">
+    <div class="survey-card card">
+      <div class="card-body">
+        <div class="progress-section">
+          <div class="progress-text">
+            <span>Question {{ question_number }} of {{ total_questions }}</span>
+            <span>{{ progress }}% complete</span>
+          </div>
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: {{ progress }}%"></div>
+          </div>
+        </div>
+
+        <div class="question-header">
+          <h1 class="question-title">{{ question_title|default:question.title }}</h1>
+          {% if question.description or question_description %}
+          <p class="question-description">{{ question_description|default:question.description }}</p>
+          {% endif %}
+        </div>
+
+        {% if messages %}
+          {% for message in messages %}
+          <div class="alert alert-danger" role="alert">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+
+        <form method="post" class="animate-fade-in survey-form" novalidate>
+          {% csrf_token %}
+          {% if question.question_type == 'radio' %}
+            {% with choices|default:question.choices as answer_choices %}
+            <div class="answers">
+              {% for choice in answer_choices %}
+              <label class="answer-item form-check">
+                <input class="form-check-input" type="radio" name="answer" id="choice-{{ forloop.counter }}" value="{{ choice.value|default:choice.text }}" {% if initial_value == choice.value or initial_value == choice.text %}checked{% endif %}>
+                <span class="form-check-label">{{ choice.text }}</span>
+              </label>
+              {% empty %}
+              <p class="text-muted">No options available.</p>
+              {% endfor %}
+            </div>
+            {% endwith %}
+          {% elif question.question_type == 'checkbox' %}
+            {% with choices|default:question.choices as answer_choices %}
+            <div class="answers">
+              {% for choice in answer_choices %}
+              <label class="answer-item form-check">
+                <input class="form-check-input" type="checkbox" name="answer" id="choice-{{ forloop.counter }}" value="{{ choice.value|default:choice.text }}" {% if initial_value and choice.value in initial_value or initial_value and choice.text in initial_value %}checked{% endif %}>
+                <span class="form-check-label">{{ choice.text }}</span>
+              </label>
+              {% empty %}
+              <p class="text-muted">No options available.</p>
+              {% endfor %}
+            </div>
+            {% endwith %}
+          {% elif question.question_type == 'dropdown' %}
+            {% with choices|default:question.choices as answer_choices %}
+            <div class="answers">
+              <select class="form-select" name="answer">
+                <option value="">Choose one...</option>
+                {% for choice in answer_choices %}
+                <option value="{{ choice.value|default:choice.text }}" {% if initial_value == choice.value or initial_value == choice.text %}selected{% endif %}>{{ choice.text }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            {% endwith %}
+          {% elif question.question_type == 'matrix' %}
+            <div class="answers">
+              <table class="table table-borderless align-middle">
+                <thead>
+                  <tr>
+                    <th></th>
+                    {% for choice in question.choices %}
+                    <th class="text-center small">{{ choice.text }}</th>
+                    {% endfor %}
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for row in question.matrix_rows_data %}
+                  <tr>
+                    <th scope="row" class="fw-normal">{{ row.label }}</th>
+                    {% for choice in question.choices %}
+                    <td class="text-center">
+                      <input class="form-check-input" type="radio" name="matrix_{{ row.id }}" value="{{ choice.value|default:choice.text }}">
+                    </td>
+                    {% endfor %}
+                  </tr>
+                  {% empty %}
+                  <tr><td colspan="{{ question.choices.count|add:'1' }}" class="text-muted">No matrix rows available.</td></tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% elif question.question_type == 'textarea' %}
+            <div class="answers">
+              <textarea class="form-control" name="answer" rows="5">{{ initial_value }}</textarea>
+            </div>
+          {% elif question.question_type == 'number' %}
+            <div class="answers">
+              <input class="form-control" type="number" name="answer" value="{{ initial_value }}">
+            </div>
+          {% elif question.question_type == 'date' %}
+            <div class="answers">
+              <input class="form-control" type="date" name="answer" value="{{ initial_value }}">
+            </div>
+          {% else %}
+            <div class="answers">
+              <input class="form-control" type="text" name="answer" value="{{ initial_value }}">
+            </div>
+          {% endif %}
+          <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3 mt-5">
+            <div class="d-flex gap-2">
+              {% if previous_question_number %}
+              <a class="btn btn-outline-secondary" href="{% url 'survey_question' number=previous_question_number %}">Back</a>
+              {% endif %}
+              <a class="btn btn-outline-secondary" href="{% url 'survey_review' %}">Review answers</a>
+            </div>
+            <button class="btn btn-success" type="submit">Continue</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

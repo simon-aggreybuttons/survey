@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Start Survey | GCSI Survey{% endblock %}
+{% block wrapper_class %}survey-wrapper survey-wrapper--wide{% endblock %}
+
+{% block content %}
+<div class="start-page">
+  <section class="start-hero">
+    <div class="container-fluid py-5 py-lg-6 px-3 px-lg-5">
+      <div class="row align-items-center gy-5">
+        <div class="col-xl-7">
+          <span class="badge rounded-pill bg-success-subtle text-success mb-3">Ghana Customer Service Index</span>
+          <h1 class="hero-title">Share your experience and help shape better service across Ghana.</h1>
+          <p class="hero-copy">This survey collects customer feedback from banking, telecom, hospitality, retail, healthcare and public services. Your responses will guide improvements across the sector you choose.</p>
+          <div class="hero-benefits row g-3 mt-4">
+            <div class="col-sm-12">
+              <div class="feature-pill">A short, sector-focused survey designed for better customer experience insights.</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-5 text-center">
+          <div class="hero-graphic">
+            <div class="hero-circle hero-circle-1"></div>
+            <div class="hero-circle hero-circle-2"></div>
+            <div class="hero-card-sm">
+              <span class="hero-card-label">Your voice</span>
+              <h2 class="hero-card-title">Help shape better services across Ghana.</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="start-content container py-4 py-lg-5">
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="survey-card card h-100">
+          <div class="card-body">
+            <form method="post" class="start-form">
+              {% csrf_token %}
+              <div class="d-flex justify-content-center">
+                <button class="btn btn-success btn-lg" type="submit">Start survey</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="survey-card card h-100">
+          <div class="card-body">
+            <h2 class="h5 mb-3">Why this matters</h2>
+            <ul class="mb-0 ps-3">
+              <li>Measure service quality across sectors</li>
+              <li>Highlight gaps in customer experience</li>
+              <li>Support better decision-making in Ghana</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
