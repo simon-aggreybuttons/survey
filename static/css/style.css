@@ -1275,6 +1275,43 @@ p {
   }
 }
 
+/* Start landing card (screenshot-inspired) */
+.start-landing {
+  min-height: calc(100vh - 110px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3fbfb;
+  padding: 3.5rem 1rem;
+}
+.start-landing__inner {
+  width: 100%;
+  max-width: 760px;
+  text-align: center;
+}
+.brand-badge { display:flex; justify-content:center; margin-bottom: -36px; }
+.brand-badge__circle {
+  width:86px; height:86px; border-radius:999px; background:linear-gradient(180deg,#0b8aa0,#026b80); display:grid; place-items:center; box-shadow:0 8px 32px rgba(6,22,41,0.08);
+}
+.brand-initials { color:white; font-weight:700; font-size:30px; }
+.home-card { background:white; border-radius:12px; overflow:hidden; border:1px solid rgba(0,0,0,0.06); box-shadow:0 18px 60px rgba(2,6,23,0.06); }
+.home-card__top { height:12px; background:#007b85; border-top-left-radius:10px; border-top-right-radius:10px; }
+.home-card__body { padding:1.15rem 1.25rem 1.4rem; }
+.home-title { font-size:1.35rem; font-weight:700; margin:0 0 6px; color: #0b2f3e; }
+.home-sub { color: var(--secondary-text); margin:0 0 0.75rem; }
+.home-controls { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-top:1rem; }
+.home-controls form { margin:0; }
+.home-progress { display:flex; align-items:center; gap:0.8rem; }
+.home-progress__bar { width:220px; height:10px; background:#e6eef0; border-radius:999px; overflow:hidden; }
+.home-progress__fill { height:100%; background:linear-gradient(90deg,#007b85,#00a3a3); }
+.home-progress__meta { font-size:0.85rem; color:var(--secondary-text); }
+.home-footer { margin-top:2.2rem; font-size:0.9rem; color:var(--secondary-text); }
+
+@media (max-width:700px) {
+  .home-controls { flex-direction:column; gap:0.6rem; }
+  .home-progress__bar { width:160px; }
+}
+
 /* ============================================
    UTILITY CLASSES
    ============================================ */
