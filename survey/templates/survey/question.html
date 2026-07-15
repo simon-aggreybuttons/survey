@@ -1,10 +1,14 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Question {{ question_number }} | GCSI Survey{% endblock %}
 
 {% block content %}
 <div class="survey-hero">
   <div class="survey-hero__inner">
+    <div class="survey-hero__logo">
+      <img src="{% static 'logo.png' %}" alt="GCSI logo" class="survey-hero__logo-img">
+    </div>
     <div class="survey-hero__title">GHANA CUSTOMER SERVICE INDEX
       <div class="survey-hero__subtitle">Multi-sector Survey on Customer Service in Ghana</div>
     </div>
@@ -20,7 +24,10 @@
   <div class="question-card">
     <div class="question-card__body">
       <div class="question-top">
-        <div class="question-meta">Please select what sector you want to rate. Testing SINGLE RESPONSE <span class="text-danger">*</span></div>
+        <div class="question-meta">{{ question_title }}{% if question.required %} <span class="text-danger">*</span>{% endif %}</div>
+        {% if question_description %}
+        <div class="question-description text-muted mt-2">{{ question_description }}</div>
+        {% endif %}
       </div>
 
       {% if messages %}

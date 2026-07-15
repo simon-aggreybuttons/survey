@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Start Survey | GCSI Survey{% endblock %}
 {% block wrapper_class %}survey-wrapper survey-wrapper--wide{% endblock %}
@@ -7,9 +8,7 @@
 <div class="start-landing">
   <div class="start-landing__inner">
     <div class="brand-badge"> 
-      <div class="brand-badge__circle"> 
-        <span class="brand-initials">G</span>
-      </div>
+      <img src="{% static 'logo.png' %}" alt="Logo" class="brand-logo">
     </div>
 
     <div class="home-card">
