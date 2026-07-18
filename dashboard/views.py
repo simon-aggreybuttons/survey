@@ -8,8 +8,9 @@ from typing import Any
 from xml.sax.saxutils import escape
 
 from django.contrib.auth import login, logout
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -166,3 +167,29 @@ class DashboardExportView(LoginRequiredMixin, View):
             return response
 
         return HttpResponse('Unsupported format', status=400)
+
+
+class PasswordChangeView(LoginRequiredMixin, View):
+    """Allow logged-in admin users to change their password."""
+
+    template_name = 'dashboard/password_change.html'
+    login_url = '/dashboard/login/'
+
+    def get(self, request: HttpRequest) -> HttpResponse:
+        form = PasswordChangeForm(user=request.user)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request: HttpRequest) -> HttpResponse:
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your password has been changed successfully!')
+            return redirect('password_change_done')
+        return render(request, self.template_name, {'form': form})
+
+
+class PasswordChangeDoneView(LoginRequiredMixin, TemplateView):
+    """Show success message after password change."""
+
+    template_name = 'dashboard/password_change_done.html'
+    login_url = '/dashboard/login/'
