@@ -112,13 +112,31 @@ class SurveyQuestionView(View):
 
         if question.question_type == 'matrix':
             payload: dict[str, Any] = {}
+            validation_errors = []
+            
             for row in question.matrix_rows_data:
-                value = request.POST.get(f'matrix_{row.id}', '')
+                # Get all values submitted for this row (should only be one due to radio button nature)
+                row_name = f'matrix_{row.id}'
+                value = request.POST.get(row_name, '').strip()
+                
+                # Additional validation: check POST data for multiple values
+                # This shouldn't happen with proper radio buttons, but we validate anyway
+                post_data = request.POST.getlist(row_name)
+                if len(post_data) > 1:
+                    validation_errors.append(f'Row "{row.label}": Multiple selections detected. Each row must have exactly one selection.')
+                
                 if value:
                     payload[row.label] = value
-            if question.required and not payload:
-                messages.error(request, 'Please answer the matrix question before continuing.')
+            
+            if validation_errors:
+                for error in validation_errors:
+                    messages.error(request, error)
                 return redirect('survey_question', number=number)
+            
+            if question.required and not payload:
+                messages.error(request, 'Please answer all required rows in the matrix question.')
+                return redirect('survey_question', number=number)
+            
             answers[str(question.id)] = payload
         elif question.question_type == 'checkbox':
             selected = request.POST.getlist('answer')

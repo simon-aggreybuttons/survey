@@ -72,12 +72,10 @@ def get_sector_companies(sector: str | None) -> list[str]:
         'Telecommunications': [
             'AirtelTigo',
             'Busy Internet',
-            'Gateway Communications',
-            'Globacom',
             'MTN',
             'Surfline',
             'Teledata ICT',
-            'Vodafone',
+            'Telecel',
             'Zipnet',
         ],
         'Hospitality': [
@@ -103,7 +101,6 @@ def get_sector_companies(sector: str | None) -> list[str]:
         ],
         'Healthcare': [
             '37 Military Hospital',
-            'Acacia',
             'Accra Psychiatric Hospital',
             'Achimota Hospital',
             'Aiport Womens Hospital',
@@ -128,7 +125,7 @@ def get_sector_companies(sector: str | None) -> list[str]:
             'A&C Mall',
             'Accra Mall',
             'Achimota Retail Centre',
-            'CityDia',
+            # 'CityDia' removed (does not exist)
             'Junction Mall',
             'Koala Shopping Mall',
             'Kumasi City Mall',
@@ -173,12 +170,13 @@ def get_sector_companies(sector: str | None) -> list[str]:
         'Transportation': [
             'Accra Cab',
             'Bolt',
-            'Dropyn',
-            'Poki Cab',
+            # 'Dropyn' removed
+            # 'Poki Cab' removed
             'Uber',
             'Yango',
         ],
         'Insurance': [
+            'Acacia',
             'Activa International Insurance Company-Ghana Limited',
             'Allianz Insurance Company Gh. Ltd.',
             'Donewell Insurance Company Limited',

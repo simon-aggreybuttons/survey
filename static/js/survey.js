@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const submitButtons = form.querySelectorAll('button[type="submit"]');
       submitButtons.forEach((button) => {
         button.disabled = true;
-        button.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Submitting...';
+        button.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Opening Survey...';
       });
 
       form.classList.add('animate-fade-out');

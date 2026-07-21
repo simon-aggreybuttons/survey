@@ -94,7 +94,7 @@
                     <th scope="row" class="fw-normal">{{ row.label }}</th>
                     {% for choice in question.choices %}
                     <td class="text-center">
-                      <input class="form-check-input" type="radio" name="matrix_{{ row.id }}" value="{{ choice.value|default:choice.text }}">
+                      <input class="form-check-input matrix-radio" type="radio" name="matrix_{{ row.id }}" data-row="{{ row.id }}" value="{{ choice.value|default:choice.text }}">
                     </td>
                     {% endfor %}
                   </tr>
@@ -143,4 +143,51 @@
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Enforce single selection per matrix row
+  const matrixRadios = document.querySelectorAll('.matrix-radio');
+  
+  matrixRadios.forEach(radio => {
+    radio.addEventListener('change', function() {
+      // Get the row name (e.g., "matrix_1")
+      const rowName = this.name;
+      
+      // Uncheck all other radios in this row
+      matrixRadios.forEach(otherRadio => {
+        if (otherRadio.name === rowName && otherRadio !== this) {
+          otherRadio.checked = false;
+        }
+      });
+    });
+  });
+  
+  // Validate form submission - ensure each matrix row has at most one selection
+  const form = document.querySelector('form[method="POST"]');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      const matrixRows = new Set();
+      let isValid = true;
+      
+      matrixRadios.forEach(radio => {
+        const rowName = radio.name;
+        if (rowName.startsWith('matrix_')) {
+          // Count checked radios for this row
+          const checkedInRow = document.querySelectorAll(`input[name="${rowName}"]:checked`).length;
+          if (checkedInRow > 1) {
+            isValid = false;
+            console.error(`Row ${rowName} has ${checkedInRow} selections instead of 1`);
+          }
+        }
+      });
+      
+      if (!isValid) {
+        e.preventDefault();
+        alert('Error: Each row in the matrix must have exactly one selection.');
+      }
+    });
+  }
+});
+</script>
 {% endblock %}
