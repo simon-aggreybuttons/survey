@@ -70,6 +70,26 @@ class Question(models.Model):
     def matrix_rows_data(self):
         return self.questionmatrixrow_set.filter(active=True).order_by('order', 'id')
 
+    def shows_scale_guidance(self):
+        """Return True for matrix-style rating questions that use a 1-up numeric scale."""
+        if self.question_type != 'matrix':
+            return False
+
+        values = []
+        for choice in self.choices:
+            raw_value = choice.value or choice.text
+            try:
+                values.append(int(raw_value))
+            except (TypeError, ValueError):
+                continue
+
+        if len(values) < 2:
+            return False
+
+        sorted_values = sorted(values)
+        expected_values = list(range(1, max(sorted_values) + 1))
+        return sorted_values == expected_values and min(sorted_values) == 1
+
 
 class Choice(models.Model):
     """Answer choice for a question."""

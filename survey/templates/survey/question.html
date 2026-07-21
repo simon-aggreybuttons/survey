@@ -36,6 +36,12 @@
         {% endfor %}
       {% endif %}
 
+      {% if question.shows_scale_guidance %}
+      <div class="alert alert-light border small text-muted mb-3" role="note">
+        <strong>Scale note:</strong> For this question, 1 is the lowest score, and moving upward means a higher score.
+      </div>
+      {% endif %}
+
       <form method="post" class="survey-form" novalidate>
         {% csrf_token %}
           {% if question.question_type == 'radio' %}
