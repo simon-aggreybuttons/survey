@@ -146,47 +146,65 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Enforce single selection per matrix row
   const matrixRadios = document.querySelectorAll('.matrix-radio');
-  
-  matrixRadios.forEach(radio => {
-    radio.addEventListener('change', function() {
-      // Get the row name (e.g., "matrix_1")
-      const rowName = this.name;
-      
-      // Uncheck all other radios in this row
-      matrixRadios.forEach(otherRadio => {
-        if (otherRadio.name === rowName && otherRadio !== this) {
-          otherRadio.checked = false;
-        }
-      });
+
+  if (matrixRadios.length) {
+    // Organize radios by value for quick lookup
+    const radiosByValue = {};
+    matrixRadios.forEach(r => {
+      const v = r.value;
+      if (!radiosByValue[v]) radiosByValue[v] = [];
+      radiosByValue[v].push(r);
     });
-  });
-  
-  // Validate form submission - ensure each matrix row has at most one selection
-  const form = document.querySelector('form[method="POST"]');
-  if (form) {
-    form.addEventListener('submit', function(e) {
-      const matrixRows = new Set();
-      let isValid = true;
-      
-      matrixRadios.forEach(radio => {
-        const rowName = radio.name;
-        if (rowName.startsWith('matrix_')) {
-          // Count checked radios for this row
-          const checkedInRow = document.querySelectorAll(`input[name="${rowName}"]:checked`).length;
-          if (checkedInRow > 1) {
-            isValid = false;
-            console.error(`Row ${rowName} has ${checkedInRow} selections instead of 1`);
+
+    // When a value is selected in any row, disable the same value in other rows
+    function updateDisabledStates() {
+      const selectedValues = new Set();
+      matrixRadios.forEach(r => { if (r.checked) selectedValues.add(r.value); });
+
+      Object.keys(radiosByValue).forEach(val => {
+        const group = radiosByValue[val];
+        const taken = selectedValues.has(val);
+        group.forEach(r => {
+          if (taken && !r.checked) {
+            r.disabled = true;
+            r.closest('label')?.classList?.add('disabled');
+          } else {
+            r.disabled = false;
+            r.closest('label')?.classList?.remove('disabled');
           }
+        });
+      });
+    }
+
+    // Ensure only one selection per row and then update availability across columns
+    matrixRadios.forEach(radio => {
+      radio.addEventListener('change', function() {
+        const rowName = this.name;
+        matrixRadios.forEach(other => {
+          if (other.name === rowName && other !== this) other.checked = false;
+        });
+        updateDisabledStates();
+      });
+    });
+
+    // Validate on submit: ensure no duplicate values across rows
+    const form = document.querySelector('form[method="POST"]');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        const selected = [];
+        matrixRadios.forEach(r => { if (r.checked) selected.push(r.value); });
+        const unique = new Set(selected);
+        if (selected.length !== unique.size) {
+          e.preventDefault();
+          alert('Each rating value can only be used once across rows. Please choose unique ratings for each row.');
+          return false;
         }
       });
-      
-      if (!isValid) {
-        e.preventDefault();
-        alert('Error: Each row in the matrix must have exactly one selection.');
-      }
-    });
+    }
+
+    // Initialize state on load
+    updateDisabledStates();
   }
 });
 </script>
