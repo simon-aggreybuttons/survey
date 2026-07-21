@@ -8,7 +8,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const submitButtons = form.querySelectorAll('button[type="submit"]');
       submitButtons.forEach((button) => {
         button.disabled = true;
-        button.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Opening Survey...';
+        const label = (button.textContent || '').trim().toLowerCase();
+        let loadingText = 'Processing...';
+        if (label === 'begin') {
+          loadingText = 'Opening Survey...';
+        } else if (label === 'next') {
+          loadingText = 'Proceeding...';
+        } else if (label.includes('submit')) {
+          loadingText = 'Submitting...';
+        }
+        button.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>' + loadingText;
       });
 
       form.classList.add('animate-fade-out');
